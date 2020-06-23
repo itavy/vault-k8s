@@ -35,6 +35,7 @@ type Command struct {
 	flagAutoName           string // MutatingWebhookConfiguration for updating
 	flagAutoHosts          string // SANs for the auto-generated TLS cert.
 	flagVaultService       string // Name of the Vault service
+	flagVaultNamespace     string // Name of the Vault namespace to authenticate
 	flagVaultImage         string // Name of the Vault Image to use
 	flagVaultAuthPath      string // Mount Path of the Vault Kubernetes Auth Method
 	flagRevokeOnShutdown   bool   // Revoke Vault Token on pod shutdown
