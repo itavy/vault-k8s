@@ -5,7 +5,8 @@ IMAGE_TAG=$(REGISTRY_NAME)/$(IMAGE_NAME):$(VERSION)
 PUBLISH_LOCATION?=https://releases.hashicorp.com
 DOCKER_DIR=./build/docker
 BUILD_DIR=.build
-GOOS?=linux
+# GOOS?=linux
+GOOS?=$(shell uname -s | awk '{print tolower($$0)}')
 GOARCH?=amd64
 BIN_NAME=$(IMAGE_NAME)_$(GOOS)_$(GOARCH)_$(VERSION)
 
