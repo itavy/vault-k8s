@@ -37,6 +37,7 @@ type Handler struct {
 	// If this is false, injection is default.
 	RequireAnnotation  bool
 	VaultAddress       string
+	VaultAuthNamespace string
 	VaultAuthPath      string
 	ImageVault         string
 	Clientset          *kubernetes.Clientset
@@ -144,6 +145,7 @@ func (h *Handler) Mutate(req *v1beta1.AdmissionRequest) *v1beta1.AdmissionRespon
 		Image:              h.ImageVault,
 		Address:            h.VaultAddress,
 		AuthPath:           h.VaultAuthPath,
+		AuthNamespace:      h.VaultAuthNamespace,
 		Namespace:          req.Namespace,
 		RevokeOnShutdown:   h.RevokeOnShutdown,
 		UserID:             h.UserID,

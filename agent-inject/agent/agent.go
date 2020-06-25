@@ -147,6 +147,9 @@ type Vault struct {
 	// AuthPath is the Mount Path of Vault Kubernetes Auth Method.
 	AuthPath string
 
+	// AuthNamespace is the namespace in Vault to authenticate to
+	AuthNamespace string
+
 	// CACert is the name of the Certificate Authority certificate
 	// to use when validating Vault's server certificates.
 	CACert string
@@ -224,6 +227,7 @@ func New(pod *corev1.Pod, patches []*jsonpatch.JsonPatchOperation) (*Agent, erro
 		Vault: Vault{
 			Address:          pod.Annotations[AnnotationVaultService],
 			AuthPath:         pod.Annotations[AnnotationVaultAuthPath],
+			AuthNamespace:    pod.Annotations[AnnotationVaultAuthNamespace],
 			CACert:           pod.Annotations[AnnotationVaultCACert],
 			CAKey:            pod.Annotations[AnnotationVaultCAKey],
 			ClientCert:       pod.Annotations[AnnotationVaultClientCert],

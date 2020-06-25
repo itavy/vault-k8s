@@ -159,6 +159,9 @@ const (
 	// method.
 	AnnotationVaultAuthPath = "vault.hashicorp.com/auth-path"
 
+	// AnnotationVaultAuthNamespace specifies the namespace to authenticate to
+	AnnotationVaultAuthNamespace = "vault.hashicorp.com/auth-namespace"
+
 	// AnnotationVaultSecretVolumePath specifies where the secrets are to be
 	// Mounted after fetching.
 	AnnotationVaultSecretVolumePath = "vault.hashicorp.com/secret-volume-path"
@@ -183,6 +186,7 @@ type AgentConfig struct {
 	Image              string
 	Address            string
 	AuthPath           string
+	AuthNamespace      string
 	Namespace          string
 	RevokeOnShutdown   bool
 	UserID             string
@@ -226,6 +230,12 @@ func Init(pod *corev1.Pod, cfg AgentConfig) error {
 
 	if _, ok := pod.ObjectMeta.Annotations[AnnotationVaultAuthPath]; !ok {
 		pod.ObjectMeta.Annotations[AnnotationVaultAuthPath] = cfg.AuthPath
+	}
+
+	if _, ok := pod.ObjectMeta.Annotations[AnnotationVaultAuthNamespace]; !ok {
+		if cfg.AuthNamespace != "" {
+			pod.ObjectMeta.Annotations[AnnotationVaultAuthNamespace] = cfg.AuthNamespace
+		}
 	}
 
 	if _, ok := pod.ObjectMeta.Annotations[AnnotationAgentImage]; !ok {

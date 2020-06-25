@@ -154,6 +154,20 @@ func TestValidate(t *testing.T) {
 				},
 			}, false,
 		},
+		{
+			Agent{
+				Namespace:          "test",
+				ServiceAccountPath: "foobar",
+				ServiceAccountName: "foobar",
+				ImageName:          "test",
+				Vault: Vault{
+					Role:          "test",
+					Address:       "https://foobar.com:8200",
+					AuthPath:      "",
+					AuthNamespace: "testAuthNamespace",
+				},
+			}, false,
+		},
 	}
 
 	for _, tt := range tests {

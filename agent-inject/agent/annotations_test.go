@@ -19,7 +19,7 @@ func TestInitCanSet(t *testing.T) {
 	pod := testPod(annotations)
 
 	agentConfig := AgentConfig{
-		"foobar-image", "http://foobar:8200", "test", "test", true, "100", "1000",
+		"foobar-image", "http://foobar:8200", "test", "testAuthNamespace", "test", true, "100", "1000",
 		DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext,
 	}
 	err := Init(pod, agentConfig)
@@ -55,7 +55,7 @@ func TestInitDefaults(t *testing.T) {
 	pod := testPod(annotations)
 
 	agentConfig := AgentConfig{
-		"", "http://foobar:8200", "test", "test", true, "", "",
+		"", "http://foobar:8200", "test", "testAuthNamespace", "test", true, "", "",
 		DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext,
 	}
 	err := Init(pod, agentConfig)
@@ -89,7 +89,7 @@ func TestInitError(t *testing.T) {
 	pod := testPod(annotations)
 
 	agentConfig := AgentConfig{
-		"image", "", "authPath", "namespace", true, "100", "1000",
+		"image", "", "authPath", "testAuthNamespace", "namespace", true, "100", "1000",
 		DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext,
 	}
 	err := Init(pod, agentConfig)
@@ -153,7 +153,7 @@ func TestSecretAnnotationsWithPreserveCaseSensitivityFlagOff(t *testing.T) {
 		var patches []*jsonpatch.JsonPatchOperation
 
 		agentConfig := AgentConfig{
-			"", "http://foobar:8200", "test", "test", true, "100", "1000",
+			"", "http://foobar:8200", "test", "testAuthNamespace", "test", true, "100", "1000",
 			DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext,
 		}
 		err := Init(pod, agentConfig)
@@ -204,7 +204,7 @@ func TestSecretAnnotationsWithPreserveCaseSensitivityFlagOn(t *testing.T) {
 		var patches []*jsonpatch.JsonPatchOperation
 
 		agentConfig := AgentConfig{
-			"", "http://foobar:8200", "test", "test", true, "100", "1000",
+			"", "http://foobar:8200", "test", "testAuthNamespace", "test", true, "100", "1000",
 			DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext,
 		}
 		err := Init(pod, agentConfig)
@@ -284,7 +284,7 @@ func TestSecretTemplateAnnotations(t *testing.T) {
 		var patches []*jsonpatch.JsonPatchOperation
 
 		agentConfig := AgentConfig{
-			"", "http://foobar:8200", "test", "test", true, "100", "1000",
+			"", "http://foobar:8200", "test", "testAuthNamespace", "test", true, "100", "1000",
 			DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext,
 		}
 		err := Init(pod, agentConfig)
@@ -344,7 +344,7 @@ func TestTemplateShortcuts(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			pod := testPod(tt.annotations)
 			agentConfig := AgentConfig{
-				"", "http://foobar:8200", "test", "test", true, "100", "1000",
+				"", "http://foobar:8200", "test", "testAuthNamespace", "test", true, "100", "1000",
 				DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext,
 			}
 			err := Init(pod, agentConfig)
@@ -404,7 +404,7 @@ func TestSecretCommandAnnotations(t *testing.T) {
 	for _, tt := range tests {
 		pod := testPod(tt.annotations)
 		agentConfig := AgentConfig{
-			"", "http://foobar:8200", "test", "test", true, "100", "1000",
+			"", "http://foobar:8200", "test", "testAuthNamespace", "test", true, "100", "1000",
 			DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext,
 		}
 		err := Init(pod, agentConfig)
@@ -537,7 +537,7 @@ func TestCouldErrorAnnotations(t *testing.T) {
 		var patches []*jsonpatch.JsonPatchOperation
 
 		agentConfig := AgentConfig{
-			"", "http://foobar:8200", "test", "test", true, "100", "1000",
+			"", "http://foobar:8200", "test", "testAuthNamespace", "test", true, "100", "1000",
 			DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext,
 		}
 		err := Init(pod, agentConfig)
@@ -558,7 +558,7 @@ func TestInitEmptyPod(t *testing.T) {
 	var pod *corev1.Pod
 
 	agentConfig := AgentConfig{
-		"foobar-image", "http://foobar:8200", "test", "test", true, "100", "1000",
+		"foobar-image", "http://foobar:8200", "test", "testAuthNamespace", "test", true, "100", "1000",
 		DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext,
 	}
 	err := Init(pod, agentConfig)
@@ -587,7 +587,7 @@ func TestVaultNamespaceAnnotation(t *testing.T) {
 		var patches []*jsonpatch.JsonPatchOperation
 
 		agentConfig := AgentConfig{
-			"foobar-image", "http://foobar:8200", "test", "test", true, "100", "1000",
+			"foobar-image", "http://foobar:8200", "test", "testAuthNamespace", "test", true, "100", "1000",
 			DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext,
 		}
 		err := Init(pod, agentConfig)
@@ -698,6 +698,46 @@ func Test_runAsSameID(t *testing.T) {
 			require.Equal(t, tt.expectedResult, result)
 			require.Equal(t, tt.expectedErr, err != nil)
 			require.Equal(t, tt.expectedUserID, agent.RunAsUser)
+		})
+	}
+}
+
+func TestVaultAuthNamespaceAnnotation(t *testing.T) {
+	tests := []struct {
+		name          string
+		key           string
+		authNamespace string
+		expectedValue string
+	}{
+		{"NoAuthNamespace", "", "", ""},
+		{"WithAuthNamespace", "vault.hashicorp.com/auth-namespace", "testNamespace", "testNamespace"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			annotation := map[string]string{
+				tt.key: tt.authNamespace,
+			}
+			pod := testPod(annotation)
+			var patches []*jsonpatch.JsonPatchOperation
+
+			agentConfig := AgentConfig{
+				"foobar-image", "http://foobar:8200", "test", "", "test", true, "100", "1000",
+				DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext,
+			}
+			err := Init(pod, agentConfig)
+			if err != nil {
+				t.Errorf("got error, shouldn't have: %s", err)
+			}
+
+			agent, err := New(pod, patches)
+			if err != nil {
+				t.Errorf("got error, shouldn't have: %s", err)
+			}
+
+			if agent.Vault.AuthNamespace != tt.expectedValue {
+				t.Errorf("expected %s, got %s", tt.expectedValue, agent.Vault.AuthNamespace)
+			}
 		})
 	}
 }

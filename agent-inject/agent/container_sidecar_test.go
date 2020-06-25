@@ -33,7 +33,7 @@ func TestContainerSidecarVolume(t *testing.T) {
 	pod := testPod(annotations)
 	var patches []*jsonpatch.JsonPatchOperation
 
-	err := Init(pod, AgentConfig{"foobar-image", "http://foobar:1234", "test", "test", true, "1000", "100", DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext})
+	err := Init(pod, AgentConfig{"foobar-image", "http://foobar:1234", "test", "", "test", true, "1000", "100", DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext})
 	if err != nil {
 		t.Errorf("got error, shouldn't have: %s", err)
 	}
@@ -84,7 +84,7 @@ func TestContainerSidecar(t *testing.T) {
 	pod := testPod(annotations)
 	var patches []*jsonpatch.JsonPatchOperation
 
-	err := Init(pod, AgentConfig{"foobar-image", "http://foobar:1234", "test", "test", false, "1000", "100", DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext})
+	err := Init(pod, AgentConfig{"foobar-image", "http://foobar:1234", "test", "", "test", false, "1000", "100", DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext})
 	if err != nil {
 		t.Errorf("got error, shouldn't have: %s", err)
 	}
@@ -185,7 +185,7 @@ func TestContainerSidecarRevokeHook(t *testing.T) {
 			pod := testPod(annotations)
 			var patches []*jsonpatch.JsonPatchOperation
 
-			err := Init(pod, AgentConfig{"foobar-image", "http://foobar:1234", "test", "test", tt.revokeFlag, "1000", "100", DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext})
+			err := Init(pod, AgentConfig{"foobar-image", "http://foobar:1234", "test", "", "test", tt.revokeFlag, "1000", "100", DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext})
 			if err != nil {
 				t.Errorf("got error, shouldn't have: %s", err)
 			}
@@ -234,7 +234,7 @@ func TestContainerSidecarConfigMap(t *testing.T) {
 	pod := testPod(annotations)
 	var patches []*jsonpatch.JsonPatchOperation
 
-	err := Init(pod, AgentConfig{"foobar-image", "http://foobar:1234", "test", "test", true, "1000", "100", DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext})
+	err := Init(pod, AgentConfig{"foobar-image", "http://foobar:1234", "test", "", "test", true, "1000", "100", DefaultAgentRunAsSameUser, DefaultAgentSetSecurityContext})
 	if err != nil {
 		t.Errorf("got error, shouldn't have: %s", err)
 	}
