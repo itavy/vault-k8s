@@ -113,7 +113,7 @@ func TestCommandEnvs(t *testing.T) {
 	}{
 		{env: "AGENT_INJECT_LISTEN", value: ":8080", cmdPtr: &cmd.flagListen},
 		{env: "AGENT_INJECT_VAULT_ADDR", value: "http://vault:8200", cmdPtr: &cmd.flagVaultService},
-		{env: "AGENT_INJECT_VAULT_NAMESPACE", value: "auth-test-namespace", cmdPtr: &cmd.flagVaultNamespace},
+		{env: "AGENT_INJECT_VAULT_AUTH_NAMESPACE", value: "auth-test-namespace", cmdPtr: &cmd.flagVaultAuthNamespace},
 		{env: "AGENT_INJECT_VAULT_AUTH_PATH", value: "auth-path-test", cmdPtr: &cmd.flagVaultAuthPath},
 		{env: "AGENT_INJECT_VAULT_IMAGE", value: "vault:1.4.2", cmdPtr: &cmd.flagVaultImage},
 		{env: "AGENT_INJECT_TLS_KEY_FILE", value: "server.key", cmdPtr: &cmd.flagKeyFile},
